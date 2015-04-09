@@ -20,7 +20,12 @@ class UrlSigner
     rawsig    = OpenSSL::HMAC.digest(digest, @key, chunks.join)
     signature = Base64.urlsafe_encode64(rawsig)
 
-    q = URI.decode_www_form(url.query)
+    if url.query
+      q = URI.decode_www_form(url.query)
+    else
+      q = []
+    end
+
     q << ["_signature", signature]
     q.sort_by! { |(n,v)| n }
 

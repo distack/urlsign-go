@@ -59,6 +59,7 @@ func (s Signer) VerifyURL(u *url.URL) error {
 	expSig := computeSignature(s.Key, chunks)
 
 	if sig != expSig {
+		Log.Printf("signature mismatch, expected %s but got %s", expSig, sig)
 		return ErrSignatureMismatch
 	}
 
