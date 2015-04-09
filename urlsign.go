@@ -11,8 +11,6 @@ import (
 	"github.com/divoxx/stackerr"
 )
 
-var Log *log.Logger
-
 var (
 	ErrOpaqueURL         = stackerr.New("can't sign or verify opaque URL")
 	ErrSignatureMismatch = stackerr.New("signature mismatch")
@@ -59,7 +57,7 @@ func (s Signer) VerifyURL(u *url.URL) error {
 	expSig := computeSignature(s.Key, chunks)
 
 	if sig != expSig {
-		Log.Printf("signature mismatch, expected %s but got %s", expSig, sig)
+		log.Printf("signature mismatch, expected %s but got %s", expSig, sig)
 		return ErrSignatureMismatch
 	}
 
