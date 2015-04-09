@@ -14,7 +14,7 @@ class UrlSigner
       raise "can't sign or verify opaque URL"
     end
 
-    chunks = [url.scheme, url.host, url.path, url.query, url.userinfo].compact
+    chunks = [url.scheme, "#{url.host}:#{url.port}", url.path, url.query, url.userinfo].compact
     digest = OpenSSL::Digest.new("sha512")
 
     rawsig    = OpenSSL::HMAC.digest(digest, @key, chunks.join)
