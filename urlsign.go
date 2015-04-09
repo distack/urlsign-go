@@ -5,6 +5,7 @@ import (
 	"crypto/sha512"
 	"encoding/base64"
 	"log"
+	"net/http"
 	"net/url"
 
 	"github.com/divoxx/stackerr"
@@ -62,6 +63,20 @@ func (s Signer) VerifyURL(u *url.URL) error {
 	}
 
 	return nil
+}
+
+func (s Signer) VerifyReq(req *http.Request) error {
+	u := url.URL{Host: req.Host}
+
+	if p := req.Header.Get("X-Forwarded-Proto"); p != "" {
+		u.Scheme = p
+	} else if req.TLS != nil {
+		u.Scheme = "https"
+	} else {
+		u.Scheme = "http"
+	}
+
+	return s.VerifyURL(u.ResolveReference(req.URL))
 }
 
 func computeSignature(key []byte, chunks []string) string {

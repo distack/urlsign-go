@@ -2,6 +2,8 @@ package urlsign
 
 import (
 	"encoding/hex"
+	"log"
+	"net/http"
 	"net/url"
 	"testing"
 )
@@ -33,6 +35,22 @@ func TestURLSigningAndVerification(t *testing.T) {
 	}
 
 	if err := signer.VerifyURL(u); err != nil {
+		t.Error("sign/verify signature mismatch")
+	}
+}
+
+func TestVerifyRequest(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://example.test/test?a=b", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	signer.SignURL(req.URL)
+	if req.URL.Query().Get("_signature") == "" {
+		t.Error("expected _signature to be present on signed URL")
+	}
+
+	if err := signer.VerifyReq(req); err != nil {
 		t.Error("sign/verify signature mismatch")
 	}
 }
