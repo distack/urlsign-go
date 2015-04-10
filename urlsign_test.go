@@ -5,8 +5,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"os/exec"
-	"strings"
 	"testing"
 )
 
@@ -53,25 +51,6 @@ func TestVerifyRequest(t *testing.T) {
 	}
 
 	if err := signer.VerifyReq(req); err != nil {
-		t.Error("sign/verify signature mismatch")
-	}
-}
-
-func TestVerifyFromRuby(t *testing.T) {
-	cmd := exec.Command("./_misc/signer.rb", key, "http://example.test/test?a=b")
-	o, err := cmd.Output()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	u, err := url.Parse(strings.TrimSpace(string(o)))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	t.Log(u)
-
-	if err := signer.VerifyURL(u); err != nil {
 		t.Error("sign/verify signature mismatch")
 	}
 }
